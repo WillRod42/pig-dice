@@ -29,13 +29,13 @@ function animateRoll(activePlayer, otherPlayer) {
   const playerDie = $("#" + activePlayer.name + "-roll");
   let count = 1;
   const intervalID = setInterval(function() {
-    playerDie.text(count);
+    playerDie.attr("src", "css/images/dice" + count + ".png");
     if (count === 6) {
       count = 1;
     } else {
       count++;
     }
-  }, 50);
+  }, 100);
   setTimeout(function() {
     clearInterval(intervalID);
     rollUI(activePlayer, otherPlayer);
@@ -45,7 +45,7 @@ function animateRoll(activePlayer, otherPlayer) {
 function rollUI(activePlayer, otherPlayer) {
   const roll = activePlayer.roll();
 
-  $("#" + activePlayer.name + "-roll").text(roll);
+  $("#" + activePlayer.name + "-roll").attr("src", "css/images/dice" + roll + ".png");
   $("#" + activePlayer.name + "-turn").text(activePlayer.turnScore);
   if (roll === 1) {
     activePlayer.endTurn();
