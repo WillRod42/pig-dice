@@ -98,6 +98,11 @@ function runAI() {
 }
 
 function switchAI(aiOn) {
+  $('#player1-roll-btn').unbind('click');
+  $('#player1-end').unbind('click');
+  $('#player2-roll-btn').unbind('click');
+  $('#player2-end').unbind('click');
+
   if (aiOn) {
     $("#player1-roll-btn").click(function() {
       animateRoll(player1, player2);
