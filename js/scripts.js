@@ -124,7 +124,6 @@ function switchAI(aiOn) {
   }
 }
 
-
 $(document).ready(function () {
   resetUIText();
 
