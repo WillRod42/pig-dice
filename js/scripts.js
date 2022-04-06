@@ -24,7 +24,8 @@ Player.prototype.endTurn = function() {
 //UI Logic
 let player1 = new Player("player1");
 let player2 = new Player("player2");
-let versusAI = true;
+
+let aiIsOn = false;
 
 function animateRoll(activePlayer, otherPlayer) {
   const playerDie = $("#" + activePlayer.name + "-roll");
@@ -48,10 +49,10 @@ function rollUI(activePlayer, otherPlayer) {
 
   $("#" + activePlayer.name + "-roll").attr("src", "css/images/dice" + roll + ".png");
   $("#" + activePlayer.name + "-turn").text(activePlayer.turnScore);
-  if (roll === 1 && versusAI === false) {
+  if (roll === 1 && !aiIsOn) {
     activePlayer.endTurn();
     endTurnUI(activePlayer, otherPlayer);
-  } else if (roll === 1 && versusAI === true && activePlayer === player1){
+  } else if (roll === 1 && aiIsOn && activePlayer === player1){
     activePlayer.endTurn();
     endTurnUI(activePlayer, otherPlayer);
     runAI();
@@ -88,17 +89,6 @@ function resetUIText() {
   $("#" + player2.name + "-score").text("0");
 }
 
-//AI Logic
-// function runAI (player2, player1){
-//   //while (player2.turnScore < 20) {
-//     rollUI(player2, player1);
-//     if (player2.turnScore >= 20){
-//       player2.endTurn();
-//       // endTurnUI(player2, player1);
-//     }
-//   //}
-// }
-
 function runAI() {
   do {
     console.log(player2.turnScore);
@@ -107,10 +97,17 @@ function runAI() {
   endTurnUI(player2, player1);
 }
 
-$(document).ready(function () {
-  resetUIText();
-  
-  if (versusAI === false){
+function switchAI(aiOn) {
+  if (aiOn) {
+    $("#player1-roll-btn").click(function() {
+      animateRoll(player1, player2);
+    });
+
+    $("#player1-end").click(function() {
+      endTurnUI(player1, player2);
+      runAI();
+    });
+  } else {
     $("#player1-roll-btn").click(function() {
       animateRoll(player1, player2);
     });
@@ -124,16 +121,22 @@ $(document).ready(function () {
     $("#player2-end").click(function() {
       endTurnUI(player2, player1);
     });
-  } else {
-    $("#player1-roll-btn").click(function() {
-      animateRoll(player1, player2);
-    });
-
-    $("#player1-end").click(function() {
-      endTurnUI(player1, player2);
-      runAI();
-    });
   }
+}
+
+
+$(document).ready(function () {
+  resetUIText();
+
+  let toggleAI = $("#toggleAI");
+  console.log(toggleAI);
+
+  toggleAI.on("change", function() {
+    aiIsOn = !aiIsOn;
+    switchAI(aiIsOn);
+  });
+  
+  switchAI(false);
 
   $("#restart").click(function() {
     player1 = new Player("player1");
