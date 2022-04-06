@@ -1,10 +1,114 @@
 //Business Logic
+function Player(name) {
+  this.name = name;
+  this.score = 0;
+  this.turnScore = 0;
+}
 
+Player.prototype.roll = function() {
+  let roll = (Math.floor(Math.random() * 6) + 1);
+  if (roll === 1) {
+    this.turnScore = 0;
+  } else {
+    this.turnScore += roll;
+  }
+  return roll;
+};
 
+Player.prototype.endTurn = function() {
+  this.score += this.turnScore;
+  this.turnScore = 0;
+  return this.score >= 100;
+};
 
 //UI Logic
-$(document).ready(function () { 
-  // $("").submit(function(event) {
-  //   event.preventDefault();
+let player1 = new Player("player1");
+let player2 = new Player("player2");
 
+function animateRoll(activePlayer, otherPlayer) {
+  const playerDie = $("#" + activePlayer.name + "-roll");
+  let count = 1;
+  const intervalID = setInterval(function() {
+    playerDie.text(count);
+    if (count === 6) {
+      count = 1;
+    } else {
+      count++;
+    }
+  }, 50);
+  setTimeout(function() {
+    clearInterval(intervalID);
+    rollUI(activePlayer, otherPlayer);
+  }, 1000);
+}
+
+function rollUI(activePlayer, otherPlayer) {
+  const roll = activePlayer.roll();
+
+  $("#" + activePlayer.name + "-roll").text(roll);
+  $("#" + activePlayer.name + "-turn").text(activePlayer.turnScore);
+  if (roll === 1) {
+    activePlayer.endTurn();
+    endTurnUI(activePlayer, otherPlayer)
+  }
+}
+
+function endTurnUI(activePlayer, otherPlayer) {
+  if (activePlayer.endTurn()) {
+    $("#" + activePlayer.name + "-roll-btn").attr("disabled", true);
+    $("#" + activePlayer.name + "-end").attr("disabled", true);
+    $("#" + otherPlayer.name + "-roll-btn").attr("disabled", true);
+    $("#" + otherPlayer.name + "-end").attr("disabled", true);
+
+    $("#results h1").text(activePlayer.name + " Wins!");
+    $("#results").removeClass("hidden");
+  } else {
+    $("#" + activePlayer.name + "-roll-btn").attr("disabled", true);
+    $("#" + activePlayer.name + "-end").attr("disabled", true);
+
+    $("#" + otherPlayer.name + "-roll-btn").removeAttr("disabled");
+    $("#" + otherPlayer.name + "-end").removeAttr("disabled");
+  }
+
+  $("#" + activePlayer.name + "-score").text(activePlayer.score);
+}
+
+function resetUIText() {
+  $("#" + player1.name + "-roll").text("");
+  $("#" + player1.name + "-turn").text("0");
+  $("#" + player1.name + "-score").text("0");
+
+  $("#" + player2.name + "-roll").text("");
+  $("#" + player2.name + "-turn").text("0");
+  $("#" + player2.name + "-score").text("0");
+}
+
+$(document).ready(function () {
+  resetUIText();
+
+  $("#player1-roll-btn").click(function() {
+    animateRoll(player1, player2);
+  });
+  $("#player2-roll-btn").click(function() {
+    animateRoll(player2, player1);
+  });
+
+  $("#player1-end").click(function() {
+      endTurnUI(player1, player2);
+  });
+  $("#player2-end").click(function() {
+    endTurnUI(player2, player1);
+  });
+
+  $("#restart").click(function() {
+    player1 = new Player("player1");
+    player2 = new Player("player2");
+
+    $("#" + player1.name + "-roll-btn").removeAttr("disabled");
+    $("#" + player1.name + "-end").removeAttr("disabled");
+
+    $("#results").addClass("hidden");
+
+    resetUIText();
+  });
 });

@@ -2,12 +2,37 @@
 <html>
   <head>
     <title></title>
+    
     <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="css/styles.css" rel="stylesheet" type="text/css">
     <script src="js/jquery-3.6.0.js"></script>
     <script src="js/scripts.js"></script>
   </head>
   <body>
-
+    <h1 class="display-1 text-center">Pig Dice</h1>
+    <div class="row">
+      <div class="col-1"></div>
+      <div class="col-5">
+        <h3>Player 1 Total Score: <span id="player1-score"></span></h3>
+        <h4>Turn Total: <span id="player1-turn"></span></h4>
+        <h4>Roll: <!--span id="player1-roll"></span--></h4>
+        <img id="player1-roll" src="" alt=""></img>
+        <button class="btn btn-primary" id="player1-roll-btn">Roll</button>
+        <button class="btn btn-danger" id="player1-end">End Turn</button>
+      </div>
+      <div class="col-5">
+        <h3>Player 2 Total Score: <span id="player2-score"></span></h3>
+        <h4>Turn Total: <!--span id="player2-turn"></span--></h4>
+        <h4>Roll:</h4>
+        <img id="player2-roll" src="" alt=""></img>
+        <button class="btn btn-primary" id="player2-roll-btn" disabled>Roll</button>
+        <button class="btn btn-danger" id="player2-end" disabled>End Turn</button>
+      </div>
+      <div class="col-1"></div>
+    </div>
+    <div id="results" class="hidden">
+      <h1></h1>
+      <button class="btn btn-primary" id="restart">Play Again</button>
+    </div>
   </body>
 </html>
