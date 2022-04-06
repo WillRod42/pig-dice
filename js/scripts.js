@@ -24,6 +24,7 @@ Player.prototype.endTurn = function() {
 //UI Logic
 let player1 = new Player("player1");
 let player2 = new Player("player2");
+let versusAI = true;
 
 function animateRoll(activePlayer, otherPlayer) {
   const playerDie = $("#" + activePlayer.name + "-roll");
@@ -47,9 +48,13 @@ function rollUI(activePlayer, otherPlayer) {
 
   $("#" + activePlayer.name + "-roll").attr("src", "css/images/dice" + roll + ".png");
   $("#" + activePlayer.name + "-turn").text(activePlayer.turnScore);
-  if (roll === 1) {
+  if (roll === 1 && versusAI === false) {
     activePlayer.endTurn();
-    endTurnUI(activePlayer, otherPlayer)
+    endTurnUI(activePlayer, otherPlayer);
+  } else if (roll === 1 && versusAI === true && activePlayer === player1){
+    activePlayer.endTurn();
+    endTurnUI(activePlayer, otherPlayer);
+    runAI();
   }
 }
 
@@ -83,22 +88,52 @@ function resetUIText() {
   $("#" + player2.name + "-score").text("0");
 }
 
+//AI Logic
+// function runAI (player2, player1){
+//   //while (player2.turnScore < 20) {
+//     rollUI(player2, player1);
+//     if (player2.turnScore >= 20){
+//       player2.endTurn();
+//       // endTurnUI(player2, player1);
+//     }
+//   //}
+// }
+
+function runAI() {
+  do {
+    console.log(player2.turnScore);
+    rollUI(player2, player1);
+  } while (player2.turnScore != 0 && player2.turnScore < 20);
+  endTurnUI(player2, player1);
+}
+
 $(document).ready(function () {
   resetUIText();
-
-  $("#player1-roll-btn").click(function() {
-    animateRoll(player1, player2);
-  });
-  $("#player2-roll-btn").click(function() {
-    animateRoll(player2, player1);
-  });
-
-  $("#player1-end").click(function() {
+  
+  if (versusAI === false){
+    $("#player1-roll-btn").click(function() {
+      animateRoll(player1, player2);
+    });
+    $("#player2-roll-btn").click(function() {
+      animateRoll(player2, player1);
+    });
+  
+    $("#player1-end").click(function() {
       endTurnUI(player1, player2);
-  });
-  $("#player2-end").click(function() {
-    endTurnUI(player2, player1);
-  });
+    });
+    $("#player2-end").click(function() {
+      endTurnUI(player2, player1);
+    });
+  } else {
+    $("#player1-roll-btn").click(function() {
+      animateRoll(player1, player2);
+    });
+
+    $("#player1-end").click(function() {
+      endTurnUI(player1, player2);
+      runAI();
+    });
+  }
 
   $("#restart").click(function() {
     player1 = new Player("player1");
@@ -108,7 +143,7 @@ $(document).ready(function () {
     $("#" + player1.name + "-end").removeAttr("disabled");
 
     $("#results").addClass("hidden");
-
     resetUIText();
   });
+
 });
